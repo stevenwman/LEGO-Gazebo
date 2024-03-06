@@ -1,0 +1,8 @@
+prefix=/home/sman/Work/CMU/Research/LEGO-project/LEGO-Gazebo/Test/install
+
+Name: my_sim
+Description: Description of my_sim
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

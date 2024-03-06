@@ -1,0 +1,2 @@
+my_sim
+-DCATKIN_DEVEL_PREFIX=/home/sman/Work/CMU/Research/LEGO-project/LEGO-Gazebo/Test/devel -DCMAKE_INSTALL_PREFIX=/home/sman/Work/CMU/Research/LEGO-project/LEGO-Gazebo/Test/install -G Unix Makefiles
