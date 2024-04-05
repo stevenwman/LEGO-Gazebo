@@ -1,0 +1,37 @@
+<launch>
+    <!-- Load the URDF into the parameter server -->
+    <arg name="paused" default="true"/>
+
+    <arg name="world_name" default="$(find my_robot)/worlds/custom_world.world"/>
+   
+    <!-- Include the empty world launch file and pass the paused argument -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="physics" value="ode" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <group ns="/mugatu_urdf">
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find my_robot)/urdf/urdf/mugatu_urdf.urdf.xacro' namespace:=mugatu_urdf"/> 
+        <!-- Spawn your robot into Gazebo -->
+        <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -param /mugatu_urdf/robot_description -z 0.17 -R 1.57 -model my_robot" />
+        <rosparam file="$(find my_robot)/config/hip_joint_controller.yaml" command="load" ns="/mugatu_urdf"/>    
+        <node name="joint_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+            <remap from="/joint_states" to="/mugatu_urdf/joint_states" />
+        </node>
+
+        <!-- <node name="gazebo_ros_control" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+              args="-urdf -z 0.2 -R 1.57 -param robot_description -model my_robot">    
+        </node>  -->
+    
+        <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" ns="/mugatu_urdf" args="hip_joint_position_controller joint_state_controller" /> 
+        
+        <!-- <node name="custom_controller" pkg="my_robot" type="joint_control.py" /> -->
+    </group>
+  
+</launch>
+  
