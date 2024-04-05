@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mugatu_urdf">
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.040241 -0.11526 0.01316" rpy="0 0 0" />
+      <mass value="0.37704" />
+      <inertia ixx="0.00079734" ixy="-3.35E-05" ixz="5.6203E-06" iyy="0.00068444" iyz="2.6321E-05"
+        izz="0.00045785" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://my_robot/meshes/base_link.STL" />
+      </geometry>
+      <material name="baselink">
+        <color rgba="0.79216 0 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://my_robot/meshes/base_link.STL" />
+      </geometry>
+
+      <!-- <surface>
+        <friction>
+          <mu>0.5</mu> 
+          <mu2>0.5</mu2> 
+          <slip1>0.1</slip1>
+          <slip2>0.1</slip2>
+        </friction>
+      </surface> -->
+      
+    </collision>
+  </link>
+
+  <link name="Empty_Link">
+    <inertial>
+      <origin xyz="0.040241 -0.11526 0.01316" rpy="0 0 0" />
+      <mass value="0.37704" />
+      <inertia ixx="0.00079734" ixy="3.35E-05" ixz="-5.6203E-06" iyy="0.00068444" iyz="2.6321E-05"
+        izz="0.00045785" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://my_robot/meshes/Empty_Link.STL" />
+      </geometry>
+      <material name="emptylink">
+        <color rgba="0 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://my_robot/meshes/Empty_Link.STL" />
+      </geometry>
+
+      <!-- <surface>
+        <friction>
+          <mu>0.5</mu> 
+          <mu2>0.5</mu2> 
+          <slip1>0.1</slip1>
+          <slip2>0.1</slip2>
+        </friction>
+      </surface> -->
+      
+    </collision>
+  </link>
+
+  <joint name="hip_joint" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="Empty_Link" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-0.36" upper="0.36" effort="100" velocity="31.4" />
+  </joint>
+
+  <transmission name="hip_joint_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="hip_joint">
+      <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="hip_joint_motor">
+      <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/mugatu_urdf</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <mu1>0.5</mu1> <!-- Friction coefficient in the first direction -->
+    <mu2>0.5</mu2> <!-- Friction coefficient in the second direction -->
+    <slip1>0.5</slip1> <!-- Slipperiness in the first direction -->
+    <slip2>0.5</slip2> <!-- Slipperiness in the second direction -->
+  </gazebo>
+
+  <gazebo reference="Empty_Link">
+    <mu1>0.5</mu1> <!-- Friction coefficient in the first direction -->
+    <mu2>0.5</mu2> <!-- Friction coefficient in the second direction -->
+    <slip1>0.5</slip1> <!-- Slipperiness in the first direction -->
+    <slip2>0.5</slip2> <!-- Slipperiness in the second direction -->
+  </gazebo>
+
+</robot>
